@@ -5,7 +5,8 @@
 ###################################################################################################
 
 rm(list=ls())
-source("primary/primary-model-plot-functions.R")
+setwd(here::here())
+source("figures/primary/scripts/primary-model-plot-functions.R")
 
 #Loading in libraries
 library(readr)
@@ -24,7 +25,7 @@ library(patchwork)
 cases <- read_csv("data/ca_case_data.csv")
 
 # load in dataset mapping weeks since January 1, 2020 to months since January 1, 2020
-dates2 <- read_csv("data/weeks_months_data.csv")
+dates2 <- read_csv("data/weeks_months_data.csv")[,2:3]
 
 # load in vaccination data
 vacc <- readRDS("data/vaccination_coverage_data.RDS")

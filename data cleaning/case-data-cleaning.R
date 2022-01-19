@@ -4,9 +4,9 @@
 ###################################################################################################
 
 rm(list=ls())
+setwd(here::here())
 
 #Loading in libraries
-library(here)
 library(readr)
 library(dplyr)
 library(tidyverse)
@@ -18,7 +18,7 @@ library(scales)
 library(stringr)
 
 #Loading in datasets
-#Data was obtained from CDPH-not publicly available
+#Data was obtained from CDPH-not publicly available-available upon request to CDPH
 covid_data <- read_csv("Data/covid_registry_2021-10-17.csv")
 
 #Downsizing COVID dataset

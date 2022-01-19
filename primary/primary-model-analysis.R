@@ -4,8 +4,8 @@
 ###################################################################################################
 
 rm(list=ls())
-setwd("/mnt/projects/covid_partners/ucsf_lo")
-source("primary/primary-model-plot-functions.R")
+setwd(here::here())
+source("figures/primary/scripts/primary-model-plot-functions.R")
 
 #Loading in libraries
 library(readr)
@@ -21,13 +21,13 @@ library(gridExtra)
 library(patchwork)
 
 # load in confirmed case data (weekly)
-cases <- read_csv("Direct Effects Analysis/Data/ca_case_data.csv")
+cases <- read_csv("data/ca_case_data.csv")
 
 # load in dataset mapping weeks since January 1, 2020 to months since January 1, 2020
-dates2 <- read_csv("Direct Effects Analysis/weeks_months_data.csv")
+dates2 <- read_csv("data/weeks_months_data.csv")[,2:3]
 
 # load in vaccination data
-vacc <- readRDS("Direct Effects Analysis/Data/vaccination_coverage_data.RDS")
+vacc <- readRDS("data/vaccination_coverage_data.RDS")
 
 ca_data <- cases  %>% left_join(vacc, "weeks_since_Jan2020") %>%
   replace_na(list(vacc_cum_12_18 = 0, vacc_cum_18_50=0, vacc_cum_50_65=0, vacc_cum_65=0, vacc_cum=0))
@@ -108,7 +108,7 @@ model_fit <- fit1 + labs(title="A", subtitle="12-17 years") + theme(axis.title.x
   fit3 + labs(title="C", subtitle="50-64 years") +
   fit4 + labs(title="D", subtitle="65+ years") +
   plot_layout(guides = "collect") & theme(legend.position = "bottom")
-ggsave(model_fit, file="Direct Effects Analysis/final plots/case-based-model-fit.png", dpi=300, width=7, height=7.5)
+ggsave(model_fit, file="figures/primary/figures/primary-model-calibration-fit.png", dpi=300, width=7, height=7.5)
 
 
 
@@ -134,4 +134,4 @@ post_vaccine <- post_vaccine %>% mutate(total_cases = rowSums(post_vaccine %>% s
                                         total_cases_lb = rowSums(post_vaccine %>% select(lb_12_18, lb_18_50, lb_50_65, lb_65)),
                                         total_cases_ub = rowSums(post_vaccine %>% select(ub_12_18, ub_18_50, ub_50_65, ub_65)))
 
-saveRDS(post_vaccine %>% select(!c(color)), "Direct Effects Analysis/final results/primary-model-main-results.RDS")
+saveRDS(post_vaccine %>% select(!c(color)), "results/primary/primary-model-main-results.RDS")

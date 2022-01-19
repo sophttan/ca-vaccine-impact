@@ -6,8 +6,8 @@
 
 
 rm(list=ls())
-setwd("/mnt/projects/covid_partners/ucsf_lo")
-source("Direct Effects Analysis/Main Scripts/final-scripts-122021/alternative-model-analysis-functions.R")
+setwd(here::here())
+source("alternative/alternative-model-analysis-functions.R")
 
 #Loading in libraries
 library(readr)
@@ -34,14 +34,14 @@ avg_time_pfizer <- 3
 avg_time_moderna <- 4
 
 
-parameters <- readRDS("Direct Effects Analysis/Data/simulated-parameters.RDS")
-cases <- read_csv("Direct Effects Analysis/Data/ca_case_data.csv")
-ca_cases_inf <- read.csv("Direct Effects Analysis/Data/ca_case_data_infection_cutoffs.csv")
-jj <- readRDS("Direct Effects Analysis/Data/jj_full_data_age_based.RDS")
-p_m <- readRDS("Direct Effects Analysis/Data/pfizer_moderna_full_data_age_based.RDS")
-total_doses <- readRDS("Direct Effects Analysis/Data/prop_pfizer_moderna_data_age_based.RDS")
-dates2 <- read_csv("Direct Effects Analysis/Data/weeks_months_data.csv") %>% select(!X1)
-vacc_spread <- readRDS("Direct Effects Analysis/Data/vaccination_coverage_data.RDS")
+parameters <- readRDS("data/simulated-parameters.RDS")
+cases <- read_csv("data/ca_case_data.csv")
+ca_cases_inf <- read.csv("data/ca_case_data_infection_cutoffs.csv")
+jj <- readRDS("data/jj_full_data_age_based.RDS")
+p_m <- readRDS("data/pfizer_moderna_full_data_age_based.RDS")
+total_doses <- readRDS("data/prop_pfizer_moderna_data_age_based.RDS")
+dates2 <- read_csv("data/weeks_months_data.csv") %>% select(!X1)
+vacc_spread <- readRDS("data/vaccination_coverage_data.RDS")
 
 # fill cases dataset (for estimating total infections)
 symp_ca <- ca_cases_inf %>% merge(expand.grid("age_hand_cut_inf" = unique(ca_cases_inf$age_hand_cut_inf), "weeks_since_Jan2020" = 0:max(ca_cases_inf$weeks_since_Jan2020)), all.y=T) %>%
@@ -60,7 +60,7 @@ pop_age <- c(3168617,17024654,7452506,6528949)
 
 
 prop_cases <- ca_cases_inf %>% filter(age_hand_cut_inf != "[0,12)")
-prop_cases <- prop_cases %>% group_by(weeks_since_Jan2020) %>% summarise(age_hand_cut_inf = age_hand_cut_inf, 
+prop_cases <- prop_cases %>% group_by(weeks_since_Jan2020) %>% summarise(age_hand_cut_inf = age_hand_cut_inf,
                                                                          prop_cases = cases/sum(cases))
 prop_cases <- prop_cases %>% spread(age_hand_cut_inf, prop_cases, fill=0)
 
@@ -73,22 +73,22 @@ for (i in 1:nrow(parameters)) {
   params <- parameters[i,]
   print(i)
   print(params)
-  
+
   protected <- make_vacc_table(params, F)
   protected_delta <- make_vacc_table(params, T)
-  
+
   prop_symp <- 1-c(rep(params$asymp_0_18, 3),rep(params$asymp_19_59, 2),rep(params$asymp_60, 2))
-  
+
   ca <- prep_inf_data(prop_symp, symp_ca)
-  
+
   for (group in 1:4) {
-    ca <- calculate_vacc(group, ca, delta = F) 
+    ca <- calculate_vacc(group, ca, delta = F)
   }
-  
+
   ca$susceptible_under12 <- ca_pop - sum(pop_age) - c(0, cumsum(ca$total_inf_under12)[1:nrow(ca)-1])
   ca$susceptible_over12 <- ca$susceptible_12_18 + ca$susceptible_18_50 + ca$susceptible_50_65 + ca$susceptible_65
-  
-  
+
+
   ####### ALTERNATIVE MODELING APPROACH - SENSITIVITY ANALYSIS #######
   # In this analysis - we use case incidence in the 12+ groups to directly estimate cases in the absence of vaccination and averted cases
   # This change to the alternative model doesn't incorporate any modeling using the unvaccinated population
@@ -96,25 +96,25 @@ for (i in 1:nrow(parameters)) {
   # prep dataset
   ca <- ca %>% select(!grep("\\[", names(.)))
   ca_cases <- prep_data(cases, ca) %>% left_join(vacc_spread, "weeks_since_Jan2020")
-  
+
   #### make case predictions in the absence of vaccination ####
   ### predictions 12-17
   ca_cases <- make_case_predictions(ca_cases, "age_2", c("[12,18)"), c(params$asymp_0_18), pop_age[1], "cases")
   res_12_18[[paste0("run", i)]] = ca_cases$cases_novacc
-  
+
   ### predictions 18-49
   ca_cases <- make_case_predictions(ca_cases, "age_3", c("[18,19)", "[19,50)"), c(params$asymp_0_18, params$asymp_19_59), pop_age[2], "cases")
   res_18_50[[paste0("run", i)]] = ca_cases$cases_novacc
-  
+
   ### predictions 50-64
   ca_cases <- make_case_predictions(ca_cases, "age_4", c("[50,60)", "[60,65)"), c(params$asymp_19_59, params$asymp_60), pop_age[3], "cases")
   res_50_65[[paste0("run", i)]] = ca_cases$cases_novacc
-  
+
   ### predictions 65+
   ca_cases <- make_case_predictions(ca_cases, "age_5", c("[65,Inf)"), c(params$asymp_60), pop_age[4], "cases")
   res_65[[paste0("run", i)]] = ca_cases$cases_novacc
-  
-  
+
+
 }
 
 
@@ -129,7 +129,7 @@ for (r in c("res_12_18", "res_18_50", "res_50_65", "res_65")) {
   assign(r, res)
 }
 
-saveRDS(res_12_18, "Direct Effects Analysis/final results/res_12_18_sim_age.RDS")
-saveRDS(res_18_50, "Direct Effects Analysis/final results/res_18_50_sim_age.RDS")
-saveRDS(res_50_65, "Direct Effects Analysis/final results/res_50_65_sim_age.RDS")
-saveRDS(res_65, "Direct Effects Analysis/final results/res_65_sim_age.RDS")
+saveRDS(res_12_18, "results/alternative/age-based/res_12_18_sim_age.RDS")
+saveRDS(res_18_50, "results/alternative/age-based/res_18_50_sim_age.RDS")
+saveRDS(res_50_65, "results/alternative/age-based/res_50_65_sim_age.RDS")
+saveRDS(res_65, "results/alternative/age-based/res_65_sim_age.RDS")

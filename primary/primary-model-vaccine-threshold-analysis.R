@@ -5,8 +5,8 @@
 ###################################################################################################
 
 rm(list=ls())
-setwd("/mnt/projects/covid_partners/ucsf_lo")
-source("primary/primary-model-plot-functions.R")
+setwd(here::here())
+source("figures/primary/scripts/primary-model-plot-functions.R")
 
 #Loading in libraries
 library(readr)
@@ -22,13 +22,13 @@ library(gridExtra)
 library(patchwork)
 
 # load in confirmed case data (weekly)
-cases <- read_csv("Direct Effects Analysis/Data/ca_case_data.csv")
+cases <- read_csv("data/ca_case_data.csv")
 
 # load in dataset mapping weeks since January 1, 2020 to months since January 1, 2020
-dates2 <- read_csv("Direct Effects Analysis/weeks_months_data.csv")
+dates2 <- read_csv("data/weeks_months_data.csv")
 
 # load in vaccination data
-vacc <- readRDS("Direct Effects Analysis/Data/vaccination_coverage_data.RDS")
+vacc <- readRDS("data/vaccination_coverage_data.RDS")
 
 beginning <- 22
 ca_cases <- cases  %>% left_join(vacc, "weeks_since_Jan2020") %>%
@@ -110,4 +110,4 @@ res
 names(res) <- c("Start of vaccination", "Averted COVID-19 cases (95% PI)", "Relative reduction in % (95% PI)")
 
 
-write_csv(res, "Direct Effects Analysis/final tables/primary_analysis_vacc_threshold_tbl.csv")
+write_csv(res, "tables/primary_analysis_vacc_threshold_tbl.csv")

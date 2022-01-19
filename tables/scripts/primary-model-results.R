@@ -1,10 +1,11 @@
 ###################################################################################################
-#Title: Direct Effects of Vaccination in CA Primary Analysis 
-#Primary analysis results
+#Title: Tables for primary analysis results (both main and age-based results)
 #Author: Sophia Tan
 ###################################################################################################
+
+
 rm(list=ls())
-setwd("/mnt/projects/covid_partners/ucsf_lo")
+setwd(here::here())
 
 #Loading in libraries
 library(readr)
@@ -19,7 +20,7 @@ library(stringr)
 library(gridExtra)
 
 # main results
-res <- readRDS("Direct Effects Analysis/final results/primary-model-main-results.RDS")
+res <- readRDS("results/primary/primary-model-main-results.RDS")
 
 format_res <- function(v) {
   paste0(v[,1], " (", v[,2], ", ", v[,3], ")")
@@ -35,8 +36,8 @@ total_cases_lb_over12 <- cases_sum["total_cases_lb"]
 total_cases_ub_over12 <- cases_sum["total_cases_ub"]
 
 # cases averted 12+
-cases_total <- c(total_cases_pred_over12, 
-                 total_cases_lb_over12, 
+cases_total <- c(total_cases_pred_over12,
+                 total_cases_lb_over12,
                  total_cases_ub_over12)
 averted_total <- cases_total-total_cases_over12
 
@@ -71,12 +72,12 @@ averted <- format_res(format(round(rbind(averted_total, averted_12_18, averted_1
 reduction <- format_res(round(rbind(reduction_total, reduction_12_18, reduction_18_50, reduction_50_65, reduction_65)))
 
 
-primary_results <- data.frame("Age group" = c("Total (12+)", "12-17", "18-49", "50-64", "65+"), 
-                                 "Observed COVID-19 cases" = observed, 
-                                 "Predicted COVID-19 cases (95% PI)" = cases, 
+primary_results <- data.frame("Age group" = c("Total (12+)", "12-17", "18-49", "50-64", "65+"),
+                                 "Observed COVID-19 cases" = observed,
+                                 "Predicted COVID-19 cases (95% PI)" = cases,
                                  "Averted COVID-19 cases (95% PI)" = averted,
                                  "Reduction in cases in % (95% PI)" = reduction)
-write_csv(primary_results, "Direct Effects Analysis/final tables/primary_analysis_tbl.csv")
+write_csv(primary_results, "tables/tables/primary_analysis_tbl.csv")
 
 
 
@@ -92,8 +93,8 @@ total_cases_lb_over12 <- post_delta_sum["total_cases_lb"]
 total_cases_ub_over12 <- post_delta_sum["total_cases_ub"]
 
 # cases averted 12+
-cases_total <- c(total_cases_pred_over12, 
-                 total_cases_lb_over12, 
+cases_total <- c(total_cases_pred_over12,
+                 total_cases_lb_over12,
                  total_cases_ub_over12)
 averted_total <- cases_total-total_cases_over12
 averted_total
@@ -102,7 +103,7 @@ averted_total
 
 
 ### age based table
-res <- readRDS("Direct Effects Analysis/final results/primary-model-age-based-results.RDS")
+res <- readRDS("results/primary/primary-model-age-based-results.RDS")
 
 # case reduction with different vaccine thresholds
 totals_65 <- apply(res %>% filter(weeks_since_Jan2020 >= 54), 2, sum)
@@ -139,10 +140,10 @@ averted <- format_res(format(round(rbind(averted_total, averted_12_18, averted_1
 reduction <- format_res(round(rbind(reduction_total, reduction_12_18, reduction_18_50, reduction_50_65, reduction_65)))
 
 
-age_based_results <- data.frame("Age group" = c("Total (12+)", "12-17", "18-49", "50-64", "65+"), 
-                              "Predicted COVID-19 cases (95% PI)" = cases, 
+age_based_results <- data.frame("Age group" = c("Total (12+)", "12-17", "18-49", "50-64", "65+"),
+                              "Predicted COVID-19 cases (95% PI)" = cases,
                               "Averted COVID-19 cases (95% PI)" = averted,
                               "Reduction in cases in % (95% PI)" = reduction)
-write_csv(age_based_results, "Direct Effects Analysis/final tables/primary_analysis_age_based_tbl.csv")
+write_csv(age_based_results, "tables/tables/primary_analysis_age_based_tbl.csv")
 
 

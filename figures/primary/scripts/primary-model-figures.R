@@ -1,12 +1,11 @@
 ###################################################################################################
-#Title: Direct Effects of Vaccination in CA Primary Analysis 
-#Primary analysis figures
+#Title: Primary analysis figures
 #Author: Sophia Tan
 ###################################################################################################
 
 rm(list=ls())
-setwd("/mnt/projects/covid_partners/ucsf_lo")
-source("Direct Effects Analysis/Main Scripts/final-scripts-122021/primary-model-plot-functions.R")
+setwd(here::here())
+source("figures/primary/scripts/primary-model-plot-functions.R")
 
 #Loading in libraries
 library(readr)
@@ -21,43 +20,43 @@ library(stringr)
 library(gridExtra)
 
 # model 1 results
-res <- readRDS("Direct Effects Analysis/final results/primary-model-main-results.RDS")
+res <- readRDS("results/primary/primary-model-main-results.RDS")
 
-dates2 <- read_csv("Direct Effects Analysis/weeks_months_data.csv")
+dates2 <- read_csv("data/weeks_months_data.csv")
 
 p1<-plot_averted_cases(res, "[12,18)") +
   geom_line(aes(y=vacc_cum_12_18*250, color="% vaccination")) +
   scale_y_continuous(name="Weekly no. cases", labels=comma,expand = expansion(mult = c(0, .05)),
                      # Add a second axis and specify its features
-                     sec.axis = sec_axis(~./250, breaks=seq(0,100,25))) 
+                     sec.axis = sec_axis(~./250, breaks=seq(0,100,25)))
 
 p2<- plot_averted_cases(res, "[18,50)") +
   geom_line(aes(y=vacc_cum_18_50*3000, color="% vaccination")) +
-  scale_y_continuous(name= element_blank(), # "Weekly no. cases", 
+  scale_y_continuous(name= element_blank(), # "Weekly no. cases",
                      labels=comma,expand = expansion(mult = c(0, .05)),
                      # Add a second axis and specify its features
-                     sec.axis = sec_axis(~./3000, name="Cumulative % vaccination", breaks=seq(0,100,25))) 
+                     sec.axis = sec_axis(~./3000, name="Cumulative % vaccination", breaks=seq(0,100,25)))
 
 p3<- plot_averted_cases(res, "[50,65)") +
   geom_line(aes(y=vacc_cum_50_65*800, color="% vaccination")) +
   scale_y_continuous(name="Weekly no. cases", labels=comma,expand = expansion(mult = c(0, .05)),
                      # Add a second axis and specify its features
-                     sec.axis = sec_axis(~./800, breaks=seq(0,100,25))) 
+                     sec.axis = sec_axis(~./800, breaks=seq(0,100,25)))
 
-p4<- plot_averted_cases(res, "[65,Inf)") + 
+p4<- plot_averted_cases(res, "[65,Inf)") +
   geom_line(aes(y=vacc_cum_65*400, color="% vaccination")) +
-  scale_y_continuous(name= element_blank(), #"Weekly no. cases", 
+  scale_y_continuous(name= element_blank(), #"Weekly no. cases",
                      labels=comma,expand = expansion(mult = c(0, .05)),
                      # Add a second axis and specify its features
                      sec.axis = sec_axis(~./400, name="Cumulative % vaccination", breaks=seq(0,100,25)))
 
 case_pred <- p1 + labs(title="A", subtitle="12-17 years") + theme(axis.title.x = element_blank()) +
   p2 + labs(title="B", subtitle="18-49 years") + theme(axis.title.x = element_blank()) +
-  p3 + labs(title="C", subtitle="50-64 years") + 
+  p3 + labs(title="C", subtitle="50-64 years") +
   p4 + labs(title="D", subtitle="65+ years") +
   plot_layout(guides = "collect") & theme(legend.position = "bottom")
 
-ggsave(case_pred, file="Direct Effects Analysis/final plots/case-based-case-pred.png", dpi=300, width=7, height=7.5)
+ggsave(case_pred, file="figures/primary/figures/primary-model-case-predictions.png", dpi=300, width=7, height=7.5)
 
 
 
@@ -107,8 +106,8 @@ r4 <- res %>%
 
 relative_reduction <- r1 + labs(title="A", subtitle="12-17 years") + theme(axis.title.x = element_blank()) +
   r2 + labs(title="B", subtitle="18-49 years") + theme(axis.title.y=element_blank(), axis.title.x = element_blank()) +
-  r3 + labs(title="C", subtitle="50-64 years") + 
+  r3 + labs(title="C", subtitle="50-64 years") +
   r4 + labs(title="D", subtitle="65+ years") + theme(axis.title.y=element_blank()) +
   plot_layout(guides = "collect") & theme(legend.position = "bottom")
 
-ggsave(relative_reduction, file="Direct Effects Analysis/final plots/case-based-model-relative-reduction.png", dpi=300, width=7, height=7.5)
+ggsave(relative_reduction, file="figures/primary/figures/primary-model-relative-reduction.png", dpi=300, width=7, height=7.5)

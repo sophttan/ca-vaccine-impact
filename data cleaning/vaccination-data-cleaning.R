@@ -5,9 +5,9 @@
 
 
 rm(list=ls())
+setwd(here::here())
 
 #Loading in libraries
-library(here)
 library(readr)
 library(dplyr)
 library(tidyverse)
@@ -25,6 +25,7 @@ pop_age <- c(3168617,17024654,7452506,6528949)
 
 #### LOAD PUBLIC VACCINATION DATA ####
 # https://data.chhs.ca.gov/dataset/vaccine-progress-dashboard/resource/faee36da-bd8c-40f7-96d4-d8f283a12b0a
+# will have to change directory depending on where you download data
 chhs_vaccination_data <- read_csv("Data/chhs_vaccination_data.csv")
 chhs_vaccination_data %>% head()
 
