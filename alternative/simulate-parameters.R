@@ -5,7 +5,7 @@
 
 
 rm(list=ls())
-setwd("/mnt/projects/covid_partners/ucsf_lo")
+setwd(here::here())
 
 objective.function <- function(params) {
   alpha <- params[1]
@@ -139,4 +139,4 @@ parameters <- sample_optimal(optimal(), "asymp_60", parameters)
 
 parameters %>% apply(2, quantile, probs=c(0.025, 0.975))
 
-saveRDS(parameters, "Direct Effects Analysis/final results/simulated-parameters.RDS")
+saveRDS(parameters, "data/simulated-parameters.RDS")
