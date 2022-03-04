@@ -1,6 +1,6 @@
 ###################################################################################################
 #Title: Direct Effects of Vaccination in CA Primary Analysis
-# Sensitivity analysis varying time definition of beginning of vaccine era
+# Sensitivity analysis varying definition of unvaccinated population
 #Author: Sophia Tan
 ###################################################################################################
 
