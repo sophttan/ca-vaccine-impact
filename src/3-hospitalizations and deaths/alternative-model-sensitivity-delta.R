@@ -1,5 +1,6 @@
 ###################################################################################################
 #Title: Hospitalization and deaths from alternative model of averted cases
+# Sensitivity analysis looking at reduced vaccine effectiveness against the delta variant
 #Author: Sophia Tan
 ###################################################################################################
 
@@ -7,18 +8,17 @@ rm(list=ls())
 source("configuration.R")
 source("src/3-hospitalizations and deaths/hosp_and_death_functions.R")
 
-
 dates <- read_csv("data/weeks_months_data.csv")
 
 hosp_data <- readRDS("data/hosp_death_rate_week_month_rates.RDS") %>% filter(weeks_since_Jan2020 >=48)
-res_12_18 <- readRDS("results/alternative/main/res_12_18_sim.RDS") %>% filter(weeks_since_Jan2020>=48)
-res_18_50 <- readRDS("results/alternative/main/res_18_50_sim.RDS") %>% filter(weeks_since_Jan2020>=48)
-res_50_65 <- readRDS("results/alternative/main/res_50_65_sim.RDS") %>% filter(weeks_since_Jan2020>=48)
-res_65 <- readRDS("results/alternative/main/res_65_sim.RDS") %>% filter(weeks_since_Jan2020>=48)
-
+res_12_18 <- readRDS("results/alternative/delta/res_12_18_sim_delta.RDS") %>% filter(weeks_since_Jan2020>=48)
+res_18_50 <- readRDS("results/alternative/delta/res_18_50_sim_delta.RDS") %>% filter(weeks_since_Jan2020>=48)
+res_50_65 <- readRDS("results/alternative/delta/res_50_65_sim_delta.RDS") %>% filter(weeks_since_Jan2020>=48)
+res_65 <- readRDS("results/alternative/delta/res_65_sim_delta.RDS") %>% filter(weeks_since_Jan2020>=48)
 
 groups<-hosp_data[1:5,]$age_hand_cut[3:5]
 results <- c("res_18_50", "res_50_65", "res_65")
+
 total_res_hosp <- NULL
 total_res_death <- NULL
 
@@ -42,7 +42,7 @@ for (i in 1:3) {
 }
 
 
-saveRDS(total_res_death, "results/hospitalizations and deaths/death_results_alternative_model.RDS")
-saveRDS(total_res_hosp, "results/hospitalizations and deaths/hosp_results_alternative_model.RDS")
+saveRDS(total_res_death, "results/hospitalizations and deaths/death_results_alternative_model_delta.RDS")
+saveRDS(total_res_hosp, "results/hospitalizations and deaths/hosp_results_alternative_model_delta.RDS")
 
 
