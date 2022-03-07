@@ -77,4 +77,4 @@ names(tbl)[1] <- "Outcome"
 
 tbl
 
-write.csv(tbl, "tables/hosp-death-simulation-results-etable7.csv", row.names = F)
+write.csv(tbl, "tables/hosp-death-simulation-results-etable8.csv", row.names = F)
