@@ -29,8 +29,8 @@ for (i in res$unvacc%>%unique()) {
     hosp <- subset_cases * subset$hosp_rate/100
     death <- subset_cases * subset$death_rate/100
 
-    hosp_res <- prep_res(cbind(subset$num_hosp, hosp), groups[group]) %>% mutate(unvacc=i)
-    death_res <- prep_res(cbind(subset$num_died, death), groups[group]) %>% mutate(unvacc=i)
+    hosp_res <- prep_res(cbind(hosp,subset$num_hosp), groups[group]) %>% mutate(unvacc=i)
+    death_res <- prep_res(cbind(death,subset$num_died), groups[group]) %>% mutate(unvacc=i)
 
     total_res_hosp <- rbind(total_res_hosp, hosp_res)
     total_res_death <- rbind(total_res_death, death_res)
