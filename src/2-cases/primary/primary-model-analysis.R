@@ -96,7 +96,7 @@ model_fit <- fit1 + labs(title="A", subtitle="12-17 years") + theme(axis.title.x
   fit3 + labs(title="C", subtitle="50-64 years") +
   fit4 + labs(title="D", subtitle="65+ years") +
   plot_layout(guides = "collect") & theme(legend.position = "bottom")
-ggsave(model_fit, file="figures/primary/figures/primary-model-calibration-fit.png", dpi=300, width=7, height=7.5)
+ggsave(model_fit, file="figures/primary-model-calibration-fit-efig2.jpg", dpi=300, width=7, height=7.5)
 
 
 
